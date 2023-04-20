@@ -1,57 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Stay22 Script Generator</title>
-	<style>
-		body {
-			background-color: black;
-			color: green;
-		}
+  <head>
+    <title>Get yo Scrip</title>
+    <style>
+      body {
+        background-color: white;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Get yo Scrip</h1>
+    <form>
+      <label for="aid">Enter AID:</label>
+      <input type="text" id="aid" name="aid" pattern="[A-Za-z0-9]+" required>
+      <br><br>
+      <button type="button" onclick="generateScript()">Submit</button>
+    </form>
+    <br>
+    <code id="output"></code>
 
-		input[type="text"] {
-			background-color: white;
-			color: green;
-		}
-	</style>
-</head>
-<body>
-	<h1>Stay22 Script Generator</h1>
-	<label for="aid">AID:</label>
-	<input type="text" id="aid" name="aid"><br><br>
-	<label for="popOnly">Is this POP ONLY?</label><br>
-	<input type="radio" id="popYes" name="popOnly" value="yes">
-	<label for="popYes">Yes</label><br>
-	<input type="radio" id="popNo" name="popOnly" value="no">
-	<label for="popNo">No</label><br><br>
-	<button onclick="generateScript()">Submit</button>
-	<div id="output"></div>
+    <script>
+      function generateScript() {
+        const aid = document.getElementById("aid").value;
 
-	<script>
-		function generateScript() {
-			const aid = document.getElementById("aid").value;
-			const popOnly = document.querySelector('input[name="popOnly"]:checked').value;
+        const script = `(function (s, t, a, y, twenty, two) {
+          s.Stay22 = s.Stay22 || {};
+          s.Stay22.params = {
+            aid: "${aid}",
+          };
+          twenty = t.createElement(a);
+          two = t.getElementsByTagName(a)[0];
+          twenty.async = 1;
+          twenty.src = y;
+          two.parentNode.insertBefore(twenty, two);
+        })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
 
-			let excludes = [];
-			if (popOnly === "yes") {
-				excludes = ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"];
-			}
-
-			const script = `(function (s, t, a, y, twenty, two) {
-				s.Stay22 = s.Stay22 || {};
-				s.Stay22.params = {
-					aid: "${aid}",
-					excludes: ${JSON.stringify(excludes)}
-				};
-				twenty = t.createElement(a);
-				two = t.getElementsByTagName(a)[0];
-				twenty.async = 1;
-				twenty.src = y;
-				two.parentNode.insertBefore(twenty, two);
-			})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
-
-			document.getElementById("output").innerHTML = `<script>${script}</script>`;
-
-		}
-	</script>
-</body>
+        document.getElementById("output").innerHTML = script;
+      }
+    </script>
+  </body>
 </html>
