@@ -1,60 +1,59 @@
-<!DOCTYPE html>
-<html>
+<script>
+  function generateScript() {
+    const aid = document.getElementById("aid").value;
+    const popOnly = document.querySelector('input[name="popOnly"]:checked').value;
 
-<head>
-  <title>GET YOUR SCRIPT</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      background-color: black;
-      color: green;
+    let excludes = [];
+    if (popOnly === "yes") {
+      excludes = ["vrbo", "booking", "expedia", "tripadvisor", "hotelscombined", "hotelscom"];
     }
 
-    input {
-      background-color: white;
-      color: green;
-    }
-  </style>
-</head>
+    const script = `(function (s, t, a, y, twenty, two) {
+  s.Stay22 = s.Stay22 || {};
+  s.Stay22.params = {
+    aid: "${aid}",
+    excludes: ${JSON.stringify(excludes)}
+  };
+  twenty = t.createElement(a);
+  two = t.getElementsByTagName(a)[0];
+  twenty.async = 1;
+  twenty.src = y;
+  two.parentNode.insertBefore(twenty, two);
+})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
 
-<body>
-  <h1>GET YOUR SCRIPT</h1>
-  <form>
-    <label for="aid">AID:</label>
-    <input type="text" id="aid" name="aid" required><br><br>
-    <label for="pop">Is this POP ONLY?</label><br>
-    <input type="radio" id="yes" name="pop" value="yes">
-    <label for="yes">Yes</label><br>
-    <input type="radio" id="no" name="pop" value="no" checked>
-    <label for="no">No</label><br><br>
-    <input type="button" value="Submit" onclick="generateScript()">
-  </form>
+    document.getElementById("output").innerHTML = `<script>\n${script}\n</script>`;
+  }
+</script>
+
+<style>
+  body {
+    background-color: black;
+    color: green;
+  }
+  input[type="text"], label, input[type="radio"] {
+    color: green;
+  }
+  input[type="text"] {
+    background-color: white;
+  }
+</style>
+
+<h1 style="color:green">GET YOUR SCRIPT</h1>
+
+<form onsubmit="generateScript(); return false;">
+  <label for="aid">AID:</label>
+  <input type="text" id="aid" name="aid" required pattern="[a-z]+" title="Input must only be text without uppercase letters or symbols.">
   <br>
-  <div id="output"></div>
-  <script>
-    function generateScript() {
-      var aid = document.getElementById("aid").value;
-      var pop = document.querySelector('input[name="pop"]:checked').value;
-      var excludes = (pop == 'yes') ? ['vrbo', 'booking', 'expedia', 'tripadvisor', 'hotelscombined', 'hotelscom'] : [];
+  <label>Is this POP ONLY?</label>
+  <br>
+  <input type="radio" id="yes" name="popOnly" value="yes" required>
+  <label for="yes">Yes</label>
+  <input type="radio" id="no" name="popOnly" value="no" required>
+  <label for="no">No</label>
+  <br><br>
+  <input type="submit" value="Generate Script">
+</form>
 
-      var script = `(function (s, t, a, y, twenty, two) {
-    s.Stay22 = s.Stay22 || {};
-    s.Stay22.params = {
-      aid: "${aid}",
-      excludes: ${JSON.stringify(excludes)}
-    };
-    twenty = t.createElement(a);
-    two = t.getElementsByTagName(a)[0];
-    twenty.async = 1;
-    twenty.src = y;
-    two.parentNode.insertBefore(twenty, two);
-  })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
+<br>
 
-      document.getElementById("output").innerHTML = script;
-    }
-  </script>
-</body>
-
-</html>
-
+<div id="output"></div>
