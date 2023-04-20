@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
     <title>Get yo Scrip</title>
+    <style>
+      body {
+        background-color: white;
+        color: black;
+      }
+    </style>
   </head>
   <body>
     <h1>Get yo Scrip</h1>
     <form>
-      <label for="aid-input">Enter AID:</label>
-      <input type="text" id="aid-input" name="aid-input" required pattern="[a-zA-Z0-9]+" />
-      <button type="button" onclick="handleSubmit()">Submit</button>
+      <label for="aid">Enter AID:</label>
+      <input type="text" id="aid" name="aid" pattern="[A-Za-z0-9]+" required>
+      <button type="button" onclick="generateScript()">Submit</button>
     </form>
-    <div>
-      <h2>Generated JavaScript code:</h2>
-      <pre><code id="output"></code></pre>
-    </div>
+    <div id="output"></div>
     <script>
-      function handleSubmit() {
-        const input = document.getElementById("aid-input").value;
-        const pattern = /^[a-zA-Z0-9]+$/; // pattern to check for only letters and numbers
-        if (pattern.test(input)) {
-          const code = `(function (s, t, a, y, twenty, two) {
+      function generateScript() {
+        const aid = document.getElementById("aid").value;
+        const codeBlock = document.createElement("code");
+        codeBlock.innerText = `<script>
+          (function (s, t, a, y, twenty, two) {
             s.Stay22 = s.Stay22 || {};
             s.Stay22.params = {
-              aid: "${input}",
+              aid: "${aid}",
             };
             twenty = t.createElement(a);
             two = t.getElementsByTagName(a)[0];
             twenty.async = 1;
             twenty.src = y;
             two.parentNode.insertBefore(twenty, two);
-          })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
-          const codeBlock = document.createElement("code");
-          codeBlock.innerText = code;
-          document.getElementById("output").innerHTML = "";
-          document.getElementById("output").appendChild(codeBlock);
-        } else {
-          alert("Input must contain only letters and numbers");
-        }
+          })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
+        </script>`;
+        document.getElementById("output").innerHTML = "";
+        document.getElementById("output").appendChild(codeBlock);
       }
     </script>
   </body>
