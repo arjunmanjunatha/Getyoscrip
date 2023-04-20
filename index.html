@@ -22,7 +22,7 @@
         event.preventDefault();
         const aid = document.getElementById("aid").value;
         const codeBlock = document.createElement("code");
-        codeBlock.textContent = `<script>
+        codeBlock.textContent = "<script>
   (function (s, t, a, y, twenty, two) {
     s.Stay22 = s.Stay22 || {};
 
@@ -37,7 +37,7 @@
     twenty.src = y;
     two.parentNode.insertBefore(twenty, two);
   })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
-</script>`;
+</script>";
         document.getElementById("output").innerHTML = "";
         document.getElementById("output").appendChild(codeBlock);
       }
