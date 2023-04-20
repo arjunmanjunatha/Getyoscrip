@@ -46,30 +46,30 @@
 
 	<script>
 		function generateScript() {
-			const aid = document.getElementById("aid").value.trim();
-			const isPopOnly = document.querySelector('input[name="pop"]:checked').value;
+  var aidInput = document.getElementById("aidInput").value.toLowerCase();
+  var popOnlyInput = document.querySelector('input[name="popOnly"]:checked');
+  var excludes = [];
 
-			let excludes = [];
-			if (isPopOnly === "yes") {
-				excludes = ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"];
-			}
+  if (popOnlyInput && popOnlyInput.value === "yes") {
+    excludes = ["vrbo", "booking", "expedia", "tripadvisor", "hotelscombined", "hotelscom"];
+  }
 
-			const script = `(function (s, t, a, y, twenty, two) {
-	s.Stay22 = s.Stay22 || {};
-	s.Stay22.params = {
-		aid: "${aid}",
-		excludes: ${JSON.stringify(excludes)}
-	};
-	twenty = t.createElement(a);
-	two = t.getElementsByTagName(a)[0];
-	twenty.async = 1;
-	twenty.src = y;
-	two.parentNode.insertBefore(twenty, two);
-})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
+  var script = "(function (s, t, a, y, twenty, two) {\n";
+  script += "  s.Stay22 = s.Stay22 || {};\n";
+  script += "  s.Stay22.params = {\n";
+  script += '    aid: "' + aidInput + '",\n';
+  script += '    excludes: ' + JSON.stringify(excludes) + '\n';
+  script += "  };\n";
+  script += "  twenty = t.createElement(a);\n";
+  script += "  two = t.getElementsByTagName(a)[0];\n";
+  script += "  twenty.async = 1;\n";
+  script += '  twenty.src = "' + stay22ScriptURL + '";\n';
+  script += "  two.parentNode.insertBefore(twenty, two);\n";
+  script += "})(window, document, 'script', 'https://scripts.stay22.com/letmeallez.js');\n";
 
-			const outputElement = document.getElementById("output");
-			outputElement.innerHTML = `<script>${script}</script>`;
-		}
+  document.getElementById("output").innerHTML = "<script>\n" + script + "</script>";
+}
+
 	</script>
 </body>
 </html>
