@@ -1,65 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>GET YOUR SCRIPT</title>
+	<title>GET YOUR SCRIPT</title>
+	<style>
+		body {
+			background-color: black;
+			color: green;
+		}
+		input[type=text] {
+			background-color: white;
+			color: green;
+		}
+		input[type=submit] {
+			background-color: green;
+			color: white;
+			padding: 5px 15px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+	</style>
 </head>
 <body>
-  <form>
-    <label for="aid-input">AID:</label>
-    <input type="text" id="aid-input" name="aid-input"><br><br>
-  
-    <button type="submit">Submit</button>
-  </form>
-
-  <p id="output-script"></p>
-
-  <script>
-    document.querySelector('form').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const aidInputValue = document.querySelector('#aid-input').value;
-
-      // Validate the user input to ensure it contains only lowercase letters and spaces
-      const regex = /^[a-z ]+$/;
-      if (!regex.test(aidInputValue)) {
-        alert('The AID must contain only lowercase letters and spaces.');
-        return;
-      }
-
-      (function (s, t, a, y, twenty, two) {
-        s.Stay22 = s.Stay22 || {};
-
-        // Set the AID parameter to the user input value
-        s.Stay22.params = {
-          aid: aidInputValue,
-        };
-
-        twenty = t.createElement(a);
-        two = t.getElementsByTagName(a)[0];
-        twenty.async = 1;
-        twenty.src = y;
-        two.parentNode.insertBefore(twenty, two);
-
-        // Update the output script with the user input value
-        document.querySelector('#output-script').textContent = `(function (s, t, a, y, twenty, two) {
-  s.Stay22 = s.Stay22 || {};
-
-  // Just fill out your configs here
-  s.Stay22.params = {
-    aid: "${aidInputValue}", // your partner ID for tracking, keep quotes
-  };
-
-  // Leave this part as-is;
-  twenty = t.createElement(a);
-  two = t.getElementsByTagName(a)[0];
-  twenty.async = 1;
-  twenty.src = y;
-  two.parentNode.insertBefore(twenty, two);
-})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
-
-      })();
-    });
-  </script>
+	<h1 style="text-align:center;">GET YOUR SCRIPT</h1>
+	<form onsubmit="return false;">
+		<label for="aid">AID:</label>
+		<input type="text" id="aid" name="aid"><br><br>
+		<label for="pop-only">Is this POP ONLY?</label>
+		<input type="radio" id="pop-only-yes" name="pop-only" value="yes">
+		<label for="pop-only-yes">Yes</label>
+		<input type="radio" id="pop-only-no" name="pop-only" value="no">
+		<label for="pop-only-no">No</label><br><br>
+		<input type="submit" onclick="generateScript()">
+	</form>
+	<div id="output"></div>
+	<script>
+		function generateScript() {
+			const aid = document.getElementById("aid").value;
+			const popOnly = document.querySelector('input[name="pop-only"]:checked').value;
+			let script = `
+			<script>
+				(function (s, t, a, y, twenty, two) {
+					s.Stay22 = s.Stay22 || {};
+					s.Stay22.params = {
+						aid: "${aid}",
+			`;
+			if (popOnly === "yes") {
+				script += `excludes: ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"],`;
+			}
+			script += `
+					};
+					twenty = t.createElement(a);
+					two = t.getElementsByTagName(a)[0];
+					twenty.async = 1;
+					twenty.src = y;
+					two.parentNode.insertBefore(twenty, two);
+				})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
+			</script>
+			`;
+			document.getElementById("output").innerHTML = script;
+		}
+	</script>
 </body>
 </html>
