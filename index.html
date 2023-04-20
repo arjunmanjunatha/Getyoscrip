@@ -11,40 +11,55 @@
   </head>
   <body>
     <h1>Get yo Scrip</h1>
-    <form onsubmit="submitForm(event)">
+    <form onsubmit="handleSubmit()">
       <label for="aid">Enter AID:</label>
       <input type="text" id="aid" name="aid" pattern="[a-zA-Z0-9]+" required>
-      <br><br>
+      <br>
       <input type="submit" value="Submit">
     </form>
-    <br>
-    <code id="output"></code>
+
+    <div id="output"></div>
+
     <script>
-      function submitForm(event) {
-  event.preventDefault();
-  var aid = document.getElementById("aid").value;
-  var codeBlock = document.createElement("code");
-  codeBlock.innerText = `
-    <script>
-      (function (s, t, a, y, twenty, two) {
-  s.Stay22 = s.Stay22 || {};
+      function handleSubmit() {
+        // Get the value of the "aid" input field
+        var aidInput = document.getElementById("aid");
+        var aidValue = aidInput.value;
 
-  // Just fill out your configs here
-  s.Stay22.params = {
-    aid: "${aid}",
-  };
+        // Insert the "aid" value into the s.Stay22.params object
+        s.Stay22.params = {
+          aid: aidValue
+        };
 
-  // Leave this part as-is;
-  twenty = t.createElement(a);
-  two = t.getElementsByTagName(a)[0];
-  twenty.async = 1;
-  twenty.src = y;
-  two.parentNode.insertBefore(twenty, two);
-})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
+        // Generate the code block with the updated "aid" value
+        var codeBlock = document.createElement("code");
+        var codeText = document.createTextNode(`
+          <script>
+            (function (s, t, a, y, twenty, two) {
+              s.Stay22 = s.Stay22 || {};
 
-document.getElementById("output").innerHTML = "";
-document.getElementById("output").appendChild(codeBlock);
+              // Just fill out your configs here
+              s.Stay22.params = {
+                aid: "${aidValue}",
+              };
 
+              // Leave this part as-is;
+              twenty = t.createElement(a);
+              two = t.getElementsByTagName(a)[0];
+              twenty.async = 1;
+              twenty.src = y;
+              two.parentNode.insertBefore(twenty, two);
+            })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
+          </script>
+        `);
+        codeBlock.appendChild(codeText);
+
+        // Update the output div with the code block
+        document.getElementById("output").innerHTML = "";
+        document.getElementById("output").appendChild(codeBlock);
+
+        // Prevent the form from submitting normally
+        return false;
       }
     </script>
   </body>
