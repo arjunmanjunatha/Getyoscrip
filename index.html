@@ -1,77 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
 	<title>GET YOUR SCRIPT</title>
 	<style>
 		body {
 			background-color: black;
 			color: green;
-			font-family: sans-serif;
 		}
 
-		input[type="text"], button, label {
-			color: green;
+		input[type="text"] {
 			background-color: white;
-			border: none;
-			border-radius: 5px;
-			padding: 5px;
-			margin: 5px;
-		}
-
-		button {
-			cursor: pointer;
-		}
-
-		#output {
-			margin-top: 10px;
-			white-space: pre-wrap;
+			color: green;
 		}
 	</style>
 </head>
 <body>
 	<h1>GET YOUR SCRIPT</h1>
-	<label for="aid">AID:</label>
-	<input type="text" id="aid">
-	<br>
-	<label for="pop">Is this POP ONLY?</label>
-	<br>
-	<input type="radio" id="popYes" name="pop" value="yes">
-	<label for="popYes">Yes</label>
-	<input type="radio" id="popNo" name="pop" value="no" checked>
-	<label for="popNo">No</label>
-	<br>
-	<button onclick="generateScript()">Submit</button>
+	<form>
+		<label for="aid">Enter your AID:</label><br>
+		<input type="text" id="aid" name="aid"><br>
+		<label for="popOnly">Is this POP ONLY?</label><br>
+		<input type="radio" id="yes" name="popOnly" value="yes">
+		<label for="yes">Yes</label><br>
+		<input type="radio" id="no" name="popOnly" value="no">
+		<label for="no">No</label><br><br>
+		<label for="question2">Is this POP ONLY?</label><br>
+		<input type="radio" id="yes2" name="popOnly2" value="yes">
+		<label for="yes2">Yes</label><br>
+		<input type="radio" id="no2" name="popOnly2" value="no">
+		<label for="no2">No</label><br><br>
+		<button type="button" onclick="generateScript()">Submit</button>
+	</form>
 	<div id="output"></div>
-
 	<script>
 		function generateScript() {
-  var aidInput = document.getElementById("aidInput").value.toLowerCase();
-  var popOnlyInput = document.querySelector('input[name="popOnly"]:checked');
-  var excludes = [];
+			let aidInput = document.getElementById("aid").value;
+			let popOnlyInput = document.querySelector('input[name="popOnly"]:checked').value;
+			let popOnlyInput2 = document.querySelector('input[name="popOnly2"]:checked').value;
+			let excludes = [];
 
-  if (popOnlyInput && popOnlyInput.value === "yes") {
-    excludes = ["vrbo", "booking", "expedia", "tripadvisor", "hotelscombined", "hotelscom"];
-  }
+			if (popOnlyInput === "yes" || popOnlyInput2 === "yes") {
+				excludes = ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"];
+			}
 
-  var script = "(function (s, t, a, y, twenty, two) {\n";
-  script += "  s.Stay22 = s.Stay22 || {};\n";
-  script += "  s.Stay22.params = {\n";
-  script += '    aid: "' + aidInput + '",\n';
-  script += '    excludes: ' + JSON.stringify(excludes) + '\n';
-  script += "  };\n";
-  script += "  twenty = t.createElement(a);\n";
-  script += "  two = t.getElementsByTagName(a)[0];\n";
-  script += "  twenty.async = 1;\n";
-  script += '  twenty.src = "' + stay22ScriptURL + '";\n';
-  script += "  two.parentNode.insertBefore(twenty, two);\n";
-  script += "})(window, document, 'script', 'https://scripts.stay22.com/letmeallez.js');\n";
+			let script = `(function (s, t, a, y, twenty, two) {
+				s.Stay22 = s.Stay22 || {};
+				s.Stay22.params = {
+					aid: "${aidInput}",
+					excludes: ${JSON.stringify(excludes)}
+				};
+				twenty = t.createElement(a);
+				two = t.getElementsByTagName(a)[0];
+				twenty.async = 1;
+				twenty.src = y;
+				two.parentNode.insertBefore(twenty, two);
+			})(window, document, "script", "https://scripts.stay22.com/letmeallez.js");`;
 
-document.getElementById("output").innerHTML = `<script>${script}</script>`;
-
-
-}
-
+			document.getElementById("output").innerHTML = `<script>${script}</script>`;
+		}
 	</script>
 </body>
 </html>
