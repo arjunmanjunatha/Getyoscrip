@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>GET YOUR SCRIPT</title>
+	<title>Stay22 Script Generator</title>
 	<style>
 		body {
 			background-color: black;
@@ -15,38 +15,31 @@
 	</style>
 </head>
 <body>
-	<h1>GET YOUR SCRIPT</h1>
-	<form>
-		<label for="aid">Enter your AID:</label><br>
-		<input type="text" id="aid" name="aid"><br>
-		<label for="popOnly">Is this POP ONLY?</label><br>
-		<input type="radio" id="yes" name="popOnly" value="yes">
-		<label for="yes">Yes</label><br>
-		<input type="radio" id="no" name="popOnly" value="no">
-		<label for="no">No</label><br><br>
-		<label for="question2">Is this POP ONLY?</label><br>
-		<input type="radio" id="yes2" name="popOnly2" value="yes">
-		<label for="yes2">Yes</label><br>
-		<input type="radio" id="no2" name="popOnly2" value="no">
-		<label for="no2">No</label><br><br>
-		<button type="button" onclick="generateScript()">Submit</button>
-	</form>
+	<h1>Stay22 Script Generator</h1>
+	<label for="aid">AID:</label>
+	<input type="text" id="aid" name="aid"><br><br>
+	<label for="popOnly">Is this POP ONLY?</label><br>
+	<input type="radio" id="popYes" name="popOnly" value="yes">
+	<label for="popYes">Yes</label><br>
+	<input type="radio" id="popNo" name="popOnly" value="no">
+	<label for="popNo">No</label><br><br>
+	<button onclick="generateScript()">Submit</button>
 	<div id="output"></div>
+
 	<script>
 		function generateScript() {
-			let aidInput = document.getElementById("aid").value;
-			let popOnlyInput = document.querySelector('input[name="popOnly"]:checked').value;
-			let popOnlyInput2 = document.querySelector('input[name="popOnly2"]:checked').value;
-			let excludes = [];
+			const aid = document.getElementById("aid").value;
+			const popOnly = document.querySelector('input[name="popOnly"]:checked').value;
 
-			if (popOnlyInput === "yes" || popOnlyInput2 === "yes") {
+			let excludes = [];
+			if (popOnly === "yes") {
 				excludes = ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"];
 			}
 
-			let script = `(function (s, t, a, y, twenty, two) {
+			const script = `(function (s, t, a, y, twenty, two) {
 				s.Stay22 = s.Stay22 || {};
 				s.Stay22.params = {
-					aid: "${aidInput}",
+					aid: "${aid}",
 					excludes: ${JSON.stringify(excludes)}
 				};
 				twenty = t.createElement(a);
