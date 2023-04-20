@@ -11,36 +11,41 @@
   </head>
   <body>
     <h1>Get yo Scrip</h1>
-    <form>
+    <form onsubmit="submitForm(event)">
       <label for="aid">Enter AID:</label>
-      <input type="text" id="aid" name="aid" pattern="[A-Za-z0-9]+" required>
+      <input type="text" id="aid" name="aid" pattern="[a-zA-Z0-9]+" required>
       <br><br>
-      <button type="button" onclick="generateScript()">Submit</button>
+      <input type="submit" value="Submit">
     </form>
     <br>
     <code id="output"></code>
-
     <script>
-      function generateScript() {
-        const aid = document.getElementById("aid").value;
+      function submitForm(event) {
+        event.preventDefault();
+        var aid = document.getElementById("aid").value;
+        var codeBlock = document.createElement("code");
+        codeBlock.innerText = `
+          <script>
+            (function (s, t, a, y, twenty, two) {
+              s.Stay22 = s.Stay22 || {};
 
-        const script = `<script>
-  (function (s, t, a, y, twenty, two) {
-    s.Stay22 = s.Stay22 || {};
+              // Just fill out your configs here
+              s.Stay22.params = {
+                aid: "${aid}",
+              };
 
-    // Just fill out your configs here
-    s.Stay22.params = {
-      aid: "${aid}", // your partner ID for tracking, keep quotes
-    };
-
-    // Leave this part as-is;
-    twenty = t.createElement(a);
-    two = t.getElementsByTagName(a)[0];
-    twenty.async = 1;
-    twenty.src = y;
-    two.parentNode.insertBefore(twenty, two);
-  })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
-</script>`;
-
+              // Leave this part as-is;
+              twenty = t.createElement(a);
+              two = t.getElementsByTagName(a)[0];
+              twenty.async = 1;
+              twenty.src = y;
+              two.parentNode.insertBefore(twenty, two);
+            })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
+          </script>
+        `;
+        document.getElementById("output").innerHTML = "";
+        document.getElementById("output").appendChild(codeBlock);
+      }
+    </script>
   </body>
 </html>
