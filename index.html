@@ -29,9 +29,18 @@
             cursor: pointer;
         }
         .output {
-            display: none;
-            margin: 20px 0;
-        }
+    display: none;
+    margin: 20px auto; /* Center the box */
+    max-width: 90%; /* Set a max-width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+@media (min-width: 768px) {
+    .output {
+        max-width: 70%; /* Smaller max-width for larger screens */
+    }
+}
+
         .code-box {
             display: block;
             width: 100%;
@@ -424,18 +433,18 @@ input:checked + .slider:before {
 
     // Copy to clipboard function
     function copyToClipboard() {
-        const codeBox = document.getElementById("generatedScript");
-        const textArea = document.createElement("textarea");
-        textArea.value = codeBox.textContent;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
+        window.copyToClipboard = function() {
+    const codeBox = document.getElementById("generatedScript");
+    const textArea = document.createElement("textarea");
+    textArea.value = codeBox.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
 
-        const copyButton = document.querySelector(".copy-btn");
-        copyButton.textContent = "Copied!";
-    }
-});
+    const copyButton = document.querySelector(".copy-btn");
+    copyButton.textContent = "Copied!";
+};
 
 </script>
 
