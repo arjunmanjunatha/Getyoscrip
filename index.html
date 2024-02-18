@@ -431,22 +431,23 @@ input:checked + .slider:before {
         document.getElementById("output").style.flexDirection = "column";
     }
 
-    // Copy to clipboard function
-    function copyToClipboard() {
-        window.copyToClipboard = function() {
-    const codeBox = document.getElementById("generatedScript");
-    const textArea = document.createElement("textarea");
-    textArea.value = codeBox.textContent;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textArea);
+    // Correctly attaching the copyToClipboard function to the window object
+    window.copyToClipboard = function() {
+        const codeBox = document.getElementById("generatedScript");
+        const textArea = document.createElement("textarea");
+        textArea.value = codeBox.textContent; // Get the content you want to copy
+        document.body.appendChild(textArea); // Append the textarea to the body
+        textArea.select(); // Select the content of the textarea
+        document.execCommand("copy"); // Execute the copy command
+        document.body.removeChild(textArea); // Remove the temporary textarea
 
-    const copyButton = document.querySelector(".copy-btn");
-    copyButton.textContent = "Copied!";
-	}
-};
+        // Change the button text to give feedback to the user
+        const copyButton = document.querySelector(".copy-btn");
+        copyButton.textContent = "Copied!";
+    };
 
+    // Your existing code for handling form submission and other functionalities
+});
 </script>
 
 </body>
