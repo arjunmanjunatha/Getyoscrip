@@ -323,99 +323,102 @@ input:checked + .slider:before {
 
 
  <script>
-		    //AID Validity checker
-	document.addEventListener('DOMContentLoaded', function () {
-    // Function to validate input fields
-    function validateInput(inputId, pattern, warningId, warningMessage) {
-        const input = document.getElementById(inputId);
-        const warning = document.getElementById(warningId);
-        input.addEventListener('input', function (event) {
-            if (!pattern.test(event.target.value)) {
-                input.setCustomValidity("Invalid Input");
-                warning.textContent = warningMessage;
-            } else {
-                input.setCustomValidity("");
-                warning.textContent = "";
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to validate input fields
+        function validateInput(inputId, pattern, warningId, warningMessage) {
+            const input = document.getElementById(inputId);
+            const warning = document.getElementById(warningId);
+            input.addEventListener('input', function (event) {
+                if (!pattern.test(event.target.value)) {
+                    input.setCustomValidity("Invalid Input");
+                    warning.textContent = warningMessage;
+                } else {
+                    input.setCustomValidity("");
+                    warning.textContent = "";
+                }
+            });
+        }
+
+        // Validate AID and Campaign ID
+        validateInput("aid", /^[a-z0-9]+$/, "aidWarning", "This can only be lowercase letters and numbers");
+        validateInput("campaignId", /^[a-z0-9]*$/, "campaignIdWarning", "This can only be lowercase letters and numbers");
+
+        // Form submission event listener
+        document.getElementById("form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            generateOutput();
         });
-    }
 
-    // Validate AID and Campaign ID
-    validateInput("aid", /^[a-z0-9]+$/, "aidWarning", "This can only be lowercase letters and numbers");
-    validateInput("campaignId", /^[a-z0-9]*$/, "campaignIdWarning", "This can only be lowercase letters and numbers");
+        // Function to generate the output script
+        function generateOutput() {
+            // Reset the Copy to Clipboard button text every time the script is generated
+            const copyButton = document.querySelector(".copy-btn");
+            copyButton.textContent = "Copy to Clipboard";
 
-    // Form submission event listener
-    document.getElementById("form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        generateOutput();
-    });
+            const aid = document.getElementById("aid").value.trim();
+            const campaignId = document.getElementById("campaignId").value.trim();
+            const excludes = Array.from(document.querySelectorAll("input[name='exclude']:checked")).map(input => input.value);
+            const links = Array.from(document.querySelectorAll("input[name='links']:checked")).map(input => input.value);
+            const custom = document.getElementById("custom").value.trim();
 
-    // Function to generate the output script
-    function generateOutput() {
-        const aid = document.getElementById("aid").value.trim();
-        const campaignId = document.getElementById("campaignId").value.trim();
-        const excludes = Array.from(document.querySelectorAll("input[name='exclude']:checked")).map(input => input.value);
-        const links = Array.from(document.querySelectorAll("input[name='links']:checked")).map(input => input.value);
-        const custom = document.getElementById("custom").value.trim();
-
-        let scriptContent = `<script>
+            let scriptContent = `<script>
 (function (s, t, a, y, twenty, two) {
     s.Stay22 = s.Stay22 || {};
     s.Stay22.params = {
         aid: "${aid}",`;
 
-        // Handle excludes
-        if (excludes.includes("all")) {
-            scriptContent += `
-    excludes: ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"],`;
-        } else if (!excludes.includes("none")) {
-            const excludeValues = excludes.filter(value => value !== "none").map(value => `"${value}"`).join(",");
-            scriptContent += `
-    excludes: [${excludeValues}],`;
-        }
-
-        // Handle links
-        if (!links.includes("none") || custom) {
-            const linkValues = [];
-            if (links.includes("cj")) {
-                linkValues.push("fave.co/","anrdoezrs.net/click","kqzyfj.com/click","dpbolvw.net/click","tkqlhce.com/click","jdoqocy.com/click");
+            // Handle excludes
+            if (excludes.includes("all")) {
+                scriptContent += `
+        excludes: ["vrbo","booking","expedia","tripadvisor","hotelscombined","hotelscom"],`;
+            } else if (!excludes.includes("none")) {
+                const excludeValues = excludes.filter(value => value !== "none").map(value => `"${value}"`).join(",");
+                scriptContent += `
+        excludes: [${excludeValues}],`;
             }
-            if (links.includes("travelpayouts")) {
-                linkValues.push("tp.st/","tp.media/");
+
+            // Handle links
+            if (!links.includes("none") || custom) {
+                const linkValues = [];
+                if (links.includes("cj")) {
+                    linkValues.push("fave.co/","anrdoezrs.net/click","kqzyfj.com/click","dpbolvw.net/click","tkqlhce.com/click","jdoqocy.com/click");
+                }
+                if (links.includes("travelpayouts")) {
+                    linkValues.push("tp.st/","tp.media/");
+                }
+                if (custom) {
+                    const customUrls = custom.split(',').map(url => url.trim());
+                    linkValues.push(...customUrls);
+                }
+                scriptContent += `
+        deepStruct: [${linkValues.map(value => `"${value}"`).join(",")}],`;
             }
-            if (custom) {
-                const customUrls = custom.split(',').map(url => url.trim());
-                linkValues.push(...customUrls);
+
+            // Handle Campaign ID
+            if (campaignId) {
+                scriptContent += `
+        campaign: "${campaignId}",`;
             }
-            scriptContent += `
-    deepStruct: [${linkValues.map(value => `"${value}"`).join(",")}],`;
-        }
 
-        // Handle Campaign ID
-        if (campaignId) {
-            scriptContent += `
-    campaign: "${campaignId}",`;
-        }
+            // Handle new toggle switches
+            const popSwitch = document.getElementById("popSwitch").checked;
+            if (!popSwitch) {
+                scriptContent += `
+      disablePop: "true",`;
+            }
+            const linkCloaking = document.getElementById("linkCloaking").checked;
+            if (linkCloaking) {
+                scriptContent += `
+      keepItPretty: "true",`;
+            }
+            const bookingLabel = document.getElementById("bookingLabel").checked;
+            if (bookingLabel) {
+                scriptContent += `
+      preserveCampaign: "true",`;
+            }
 
-        // Handle new toggle switches
-        const popSwitch = document.getElementById("popSwitch").checked;
-        if (!popSwitch) {
-            scriptContent += `
-  disablePop: "true",`;
-        }
-        const linkCloaking = document.getElementById("linkCloaking").checked;
-        if (linkCloaking) {
-            scriptContent += `
-  keepItPretty: "true",`;
-        }
-        const bookingLabel = document.getElementById("bookingLabel").checked;
-        if (bookingLabel) {
-            scriptContent += `
-  preserveCampaign: "true",`;
-        }
-
-        // Finalize script
-        scriptContent += `};
+            // Finalize script
+            scriptContent += `};
     // Leave this part as-is;
     twenty = t.createElement(a);
     two = t.getElementsByTagName(a)[0];
@@ -425,30 +428,31 @@ input:checked + .slider:before {
 })(window, document, "script", "https://scripts.stay22.com/letmeallez.js");
 ` + "<" + "/script>";
 
-        const generatedScript = document.getElementById("generatedScript");
-        generatedScript.textContent = scriptContent;
-        document.getElementById("output").style.display = "flex";
-        document.getElementById("output").style.flexDirection = "column";
-    }
+            const generatedScript = document.getElementById("generatedScript");
+            generatedScript.textContent = scriptContent;
+            document.getElementById("output").style.display = "flex";
+            document.getElementById("output").style.flexDirection = "column";
+        }
 
-    // Correctly attaching the copyToClipboard function to the window object
-    window.copyToClipboard = function() {
-        const codeBox = document.getElementById("generatedScript");
-        const textArea = document.createElement("textarea");
-        textArea.value = codeBox.textContent; // Get the content you want to copy
-        document.body.appendChild(textArea); // Append the textarea to the body
-        textArea.select(); // Select the content of the textarea
-        document.execCommand("copy"); // Execute the copy command
-        document.body.removeChild(textArea); // Remove the temporary textarea
+        // Correctly attaching the copyToClipboard function to the window object
+        window.copyToClipboard = function() {
+            const codeBox = document.getElementById("generatedScript");
+            const textArea = document.createElement("textarea");
+            textArea.value = codeBox.textContent; // Get the content you want to copy
+            document.body.appendChild(textArea); // Append the textarea to the body
+            textArea.select(); // Select the content of the textarea
+            document.execCommand("copy"); // Execute the copy command
+            document.body.removeChild(textArea); // Remove the temporary textarea
 
-        // Change the button text to give feedback to the user
-        const copyButton = document.querySelector(".copy-btn");
-        copyButton.textContent = "Copied!";
-    };
+            // Change the button text to give feedback to the user
+            const copyButton = document.querySelector(".copy-btn");
+            copyButton.textContent = "Copied!";
+        };
 
-    // Your existing code for handling form submission and other functionalities
-});
+        // Your existing code for handling form submission and other functionalities
+    });
 </script>
+
 
 </body>
 </html>
